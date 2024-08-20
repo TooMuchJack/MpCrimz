@@ -78,11 +78,37 @@
             background-color: #181818;
             border-radius: 10px;
             margin-right: 20px; /* Space between player and queue */
+            position: relative;
         }
         .player-container h1 {
             margin-bottom: 20px;
             font-size: 2.5rem;
             color: #1DB954; /* Darker green */
+        }
+        .volume-container {
+            position: absolute;
+            top: 20px;
+            left: -60px; /* Adjust for volume bar width */
+            height: 200px; /* Adjust height as needed */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .volume-bar {
+            width: 20px;
+            height: 100%;
+            background: #333;
+            border-radius: 10px;
+            position: relative;
+        }
+        .volume-fill {
+            background: #1DB954;
+            height: 0;
+            border-radius: 10px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            transition: height 0.1s ease;
         }
         .controls-container {
             display: flex;
@@ -181,14 +207,19 @@
     <nav>
         <a href="#home">Home</a>
         <a href="#credits">Credits</a>
-        <a href="https://github.com/TooMuchJack/mpsic" target="_blank">GitHub</a>
+        <a href="https://github.com/your-github-repo" target="_blank">GitHub</a>
     </nav>
-    <a href="https://ko-fi.com/mpsic" class="buy-coffee" target="_blank">Buy Me a Coffee</a>
+    <a href="https://www.buymeacoffee.com/your-profile" class="buy-coffee" target="_blank">Buy Me a Coffee</a>
 </header>
 
 <!-- Main Content -->
 <div class="content">
     <div class="player-container" id="home">
+        <div class="volume-container">
+            <div class="volume-bar">
+                <div class="volume-fill" id="volumeFill"></div>
+            </div>
+        </div>
         <h1>Music Player</h1>
         <div class="controls-container">
             <label class="custom-file-button" for="fileInput">Choose MP3 Files</label> <!-- Custom Button -->
@@ -214,7 +245,7 @@
 <!-- Credits Section -->
 <section id="credits">
     <h2>Credits</h2>
-    <p>Brought before your eyes by me!</p>
+    <p>Developed by [Your Name]</p>
 </section>
 
 <script>
@@ -227,18 +258,20 @@
     const prevBtn = document.getElementById('prevBtn');
     const queueList = document.getElementById('queueList');
     const searchBar = document.getElementById('searchBar');
+    const volumeFill = document.getElementById('volumeFill');
 
     let files = [];
     let currentFileIndex = 0;
     let isPaused = false;
 
     fileInput.addEventListener('change', function(event) {
-        files = Array.from(event.target.files);
-        populateQueue();
+        const newFiles = Array.from(event.target.files);
+        files = files.concat(newFiles); // Append new files to existing ones
+        populateQueue(); // Refresh the queue
     });
 
     function populateQueue() {
-        queueList.innerHTML = '';
+        queueList.innerHTML = ''; // Clear current list
         files.forEach((file, index) => {
             const listItem = document.createElement('li');
             listItem.textContent = file.name;
@@ -318,6 +351,27 @@
         audioPlayer.play();
         highlightPlaying();
     }
+
+    // Volume Control
+    audioPlayer.addEventListener('volumechange', function() {
+        updateVolumeFill();
+    });
+
+    function updateVolumeFill() {
+        const volume = audioPlayer.volume * 100;
+        volumeFill.style.height = volume + '%';
+    }
+
+    volumeFill.parentElement.addEventListener('click', function(event) {
+        const rect = volumeFill.parentElement.getBoundingClientRect();
+        const y = event.clientY - rect.top;
+        const height = rect.height;
+        const volume = 1 - (y / height);
+        audioPlayer.volume = volume;
+        updateVolumeFill();
+    });
+
+    updateVolumeFill(); // Initial volume display
 </script>
 
 </body>

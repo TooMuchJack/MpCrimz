@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MpCrimz</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/TooMuchJack/mpcrimz/main/image.png" type="image/png">
+      <meta property="og:title" content="MpCrimz">
+    <meta property="og:description" content="A safe and free way to play any audio file in a playlist">
+    <meta property="og:image" content="https://raw.githubusercontent.com/TooMuchJack/mpcrimz/main/image.png">
+    <meta property="og:type" content="website">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        header {
+            width: 100%;
+            background-color: #2A2A2A; 
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            border-bottom-left-radius: 20px; 
+            border-bottom-right-radius: 20px; 
+        }
+        header nav {
+            display: flex;
+            align-items: center;
+        }
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        header nav a:hover {
+            color: #1DB954;
+        }
+        header .buy-coffee {
+            background-color: #1DB954;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        header .buy-coffee:hover {
+            background-color: #14833B;
+        }
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 80px; 
+        }
+        .player-container {
+            flex: 2;
+            padding: 20px;
+            max-width: 600px;
+            text-align: center;
+            background-color: #181818;
+            border-radius: 10px;
+            margin-right: 20px; 
+            position: relative;
+        }
+        .player-container h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #1DB954;
+        }
+        .volume-container {
+            position: absolute;
+            top: 20px;
+            left: -60px; 
+            height: 200px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .volume-bar {
+            width: 20px;
+            height: 100%;
+            background: #333;
+            border-radius: 10px;
+            position: relative;
+        }
+        .volume-fill {
+            background: #1DB954;
+            height: 0;
+            border-radius: 10px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            transition: height 0.1s ease;
+        }
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; 
+            margin-bottom: 200px; 
+        }
+        button {
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+        button:hover {
+            background-color: #14833B;
+        }
+        .custom-file-button {
+            background-color: #333; 
+            color: #1DB954; 
+            border-radius: 50px;
+            border: 2px solid #1DB954;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 10px 20px;
+            margin-bottom: 20px; 
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+        }
+        .custom-file-button:hover {
+            background-color: #444;
+            border-color: #1DB954;
+            color: white;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .queue-container {
+            padding: 20px;
+            background-color: #181818;
+            border-radius: 10px;
+            max-width: 300px;
+        }
+        .queue-container h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #1DB954; 
+        }
+        .queue-container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #1DB954;
+            border-radius: 50px;
+            background-color: #2A2A2A;
+            color: white;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .queue-container input[type="text"]::placeholder {
+            color: #7A7A7A;
+        }
+        .queue-list {
+            list-style: none;
+            padding: 0;
+        }
+        .queue-list li {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .queue-list li.playing {
+            font-weight: bold;
+            color: #1DB954;
+        }
+        .queue-list li:hover {
+            background-color: #333;
+        }
+        section {
+            margin-top: 0; 
+            text-align: center;
+        }
+         header .logo {
+            margin-right: auto; 
+            display: flex;
+            align-items: center;
+        }
+        header .logo img {
+            height: 40px; 
+            width: auto;
+    </style>
+</head>
+<body>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9361603564833662"
+     crossorigin="anonymous"></script>
+
+
+<header>
+    <div class="logo">
+        <img src="https://raw.githubusercontent.com/TooMuchJack/mpcrimz/main/image.png" alt="Logo">
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="credits.html">Credits</a>
+        <a href="mp4player.html">MP4 Player</a>
+        <a href="https://github.com/TooMuchJack/mpcrimz/issues" target="_blank">Bug</a>
+        <a href="https://spotifydown.com" target="_blank">Download</a>
+    </nav>
+    <a href="https://ko-fi.com/mpsic" class="buy-coffee" target="_blank">Buy Me a Coffee</a>
+</header>
+
+
+<div class="content">
+    <div class="player-container" id="home">
+        <div class="volume-container">
+            <div class="volume-bar">
+                <div class="volume-fill" id="volumeFill"></div>
+            </div>
+        </div>
+        <h1>Music Player</h1>
+        <div class="controls-container">
+            <label class="custom-file-button" for="fileInput">Choose MP3 Files 'Q'</label> 
+            <input type="file" id="fileInput" accept="audio/mp3" multiple>
+
+            <button id="prevBtn">Previous 'L Arrow'</button>
+            <button id="playAllBtn">Play All in Sequence</button>
+            <button id="playRandomBtn">Play Random 'R'</button>
+            <button id="pauseBtn">Pause/Resume 'Space'</button>
+            <button id="skipBtn">Next 'R Arrow'</button>
+        </div>
+
+        <audio id="audioPlayer" controls></audio>
+    </div>
+
+    <div class="queue-container">
+        <h2>Playlist Queue</h2>
+        <input type="text" id="searchBar" placeholder="Search...">
+        <ul id="queueList" class="queue-list"></ul>
+    </div>
+</div>
+
+
+<section id="credits">
+</section>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const playAllBtn = document.getElementById('playAllBtn');
+    const playRandomBtn = document.getElementById('playRandomBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const skipBtn = document.getElementById('skipBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const queueList = document.getElementById('queueList');
+    const searchBar = document.getElementById('searchBar');
+    const volumeFill = document.getElementById('volumeFill');
+
+    let files = [];
+    let currentFileIndex = 0;
+    let isPaused = false;
+
+    fileInput.addEventListener('change', function(event) {
+        const newFiles = Array.from(event.target.files);
+        files = files.concat(newFiles); 
+        populateQueue(); 
+    });
+
+    function populateQueue() {
+        queueList.innerHTML = ''; 
+        files.forEach((file, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = file.name;
+            listItem.dataset.index = index;
+            listItem.addEventListener('click', () => playFile(file, index));
+            queueList.appendChild(listItem);
+        });
+    }
+
+    function highlightPlaying() {
+        const items = queueList.querySelectorAll('li');
+        items.forEach((item, index) => {
+            item.classList.toggle('playing', index === currentFileIndex);
+        });
+    }
+
+    function filterQueue() {
+        const searchTerm = searchBar.value.toLowerCase();
+        const items = queueList.querySelectorAll('li');
+        items.forEach(item => {
+            const fileName = item.textContent.toLowerCase();
+            item.style.display = fileName.includes(searchTerm) ? 'block' : 'none';
+        });
+    }
+
+    searchBar.addEventListener('input', filterQueue);
+
+    playAllBtn.addEventListener('click', function() {
+        if (files.length > 0) {
+            currentFileIndex = 0;
+            playFile(files[currentFileIndex]);
+        }
+    });
+
+    playRandomBtn.addEventListener('click', function() {
+        if (files.length > 0) {
+            const randomIndex = Math.floor(Math.random() * files.length);
+            playFile(files[randomIndex]);
+        }
+    });
+
+    pauseBtn.addEventListener('click', function() {
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+            isPaused = false;
+        } else {
+            audioPlayer.pause();
+            isPaused = true;
+        }
+    });
+
+    skipBtn.addEventListener('click', function() {
+        if (currentFileIndex < files.length - 1) {
+            currentFileIndex++;
+            playFile(files[currentFileIndex]);
+        }
+    });
+
+    prevBtn.addEventListener('click', function() {
+        if (currentFileIndex > 0) {
+            currentFileIndex--;
+            playFile(files[currentFileIndex]);
+        }
+    });
+
+    audioPlayer.addEventListener('ended', function() {
+        if (!isPaused && currentFileIndex < files.length - 1) {
+            currentFileIndex++;
+            playFile(files[currentFileIndex]);
+        }
+    });
+
+    function playFile(file, index = currentFileIndex) {
+        currentFileIndex = index;
+        const url = URL.createObjectURL(file);
+        audioPlayer.src = url;
+        audioPlayer.play();
+        highlightPlaying();
+    }
+
+    
+    audioPlayer.addEventListener('volumechange', function() {
+        updateVolumeFill();
+    });
+
+    function updateVolumeFill() {
+        const volume = audioPlayer.volume * 100;
+        volumeFill.style.height = volume + '%';
+    }
+
+    volumeFill.parentElement.addEventListener('click', function(event) {
+        const rect = volumeFill.parentElement.getBoundingClientRect();
+        const y = event.clientY - rect.top;
+        const height = rect.height;
+        const volume = 1 - (y / height);
+        audioPlayer.volume = volume;
+        updateVolumeFill();
+    });
+
+    updateVolumeFill(); 
+    document.addEventListener('keydown', function(event) {
+    switch(event.code) {
+        case 'Space': // Spacebar to play/pause
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+            } else {
+                videoPlayer.pause();
+            }
+            break;
+        case 'ArrowRight': // Right arrow to skip to next video
+            skipVideo();
+            break;
+        case 'ArrowLeft': // Left arrow to go to previous video
+            previousVideo();
+            break;
+        case 'KeyR': // 'R' key to play a random video
+            playRandom();
+            break;
+        case 'KeyQ': // 'Q' key to add a video to the queue
+            openFileDialog();
+            break;
+    }
+});
+
+function skipVideo() {
+    if (currentFileIndex < files.length - 1) {
+        currentFileIndex++;
+        playFile(files[currentFileIndex]);
+    }
+}
+
+function previousVideo() {
+    if (currentFileIndex > 0) {
+        currentFileIndex--;
+        playFile(files[currentFileIndex]);
+    }
+}
+
+function playRandom() {
+    const randomIndex = Math.floor(Math.random() * files.length);
+    playFile(files[randomIndex]);
+}
+
+function openFileDialog() {
+    document.getElementById('fileInput').click(); // Trigger file input dialog
+}
+</script>
+
+</body>
+</html>

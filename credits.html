@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credits</title>
+    <style>
+        /* Spotify-Like Design */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        header {
+            width: 100%;
+            background-color: #2A2A2A; /* Lighter dark green */
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            border-bottom-left-radius: 20px; /* Curved bottom-left corner */
+            border-bottom-right-radius: 20px; /* Curved bottom-right corner */
+        }
+        header nav {
+            display: flex;
+            align-items: center;
+        }
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        header nav a:hover {
+            color: #1DB954;
+        }
+        header .buy-coffee {
+            background-color: #1DB954;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        header .buy-coffee:hover {
+            background-color: #14833B;
+        }
+        .credits {
+            margin-top: 80px; /* Adjust for header height */
+            padding: 40px;
+            background-color: #181818;
+            border-radius: 10px;
+            width: 1626px; /* Fixed width */
+            height: 661px; /* Fixed height */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Optional: Add shadow for depth */
+        }
+        .credits h2 {
+            font-size: 2rem;
+            margin-bottom: 20px; /* Increased margin for spacing */
+            color: #1DB954; /* Darker green */
+        }
+        .credits p {
+            font-size: 1rem; /* Same font size */
+            color: #B0B0B0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header Section -->
+<header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="credits.html">Credits</a>
+        <a href="https://github.com/TooMuchJack/mpsic/issues/new" target="_blank">Bug</a>
+    </nav>
+    <a href="https://ko-fi.com/mpsic" class="buy-coffee" target="_blank">Buy Me a Coffee</a>
+</header>
+
+<!-- Credits Section -->
+<div class="credits">
+    <h2>Credits</h2>
+    <p>Developed by TooMuchJack and Iza</p>
+</div>
+
+</body>
+</html>

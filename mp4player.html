@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MP4 Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        header {
+            width: 100%;
+            background-color: #2A2A2A; 
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            border-bottom-left-radius: 20px; 
+            border-bottom-right-radius: 20px; 
+        }
+        header nav {
+            display: flex;
+            align-items: center;
+        }
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        header nav a:hover {
+            color: #1DB954;
+        }
+        header .buy-coffee {
+            background-color: #1DB954;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        header .buy-coffee:hover {
+            background-color: #14833B;
+        }
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 80px;
+        }
+        .player-container {
+            flex: 2;
+            padding: 20px;
+            max-width: 800px;
+            text-align: center;
+            background-color: #181818;
+            border-radius: 10px;
+            position: relative;
+        }
+        .player-container h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            color: #1DB954;
+        }
+        .video-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        video {
+            width: 800px; 
+            height: auto;
+            border-radius: 10px;
+        }
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 25px; /* Increased gap for spacing */
+            margin-right: 20px;
+        }
+        button {
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            max-width: 300px;
+        }
+        button:hover {
+            background-color: #14833B;
+        }
+        .custom-file-button {
+            background-color: #333;
+            color: #1DB954;
+            border-radius: 50px;
+            border: 2px solid #1DB954;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            margin-left: 0; /* Align with other buttons */
+        }
+        .custom-file-button:hover {
+            background-color: #444;
+            border-color: #1DB954;
+            color: white;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .queue-container {
+            padding: 20px;
+            background-color: #181818;
+            border-radius: 10px;
+            max-width: 300px;
+            margin-left: 20px;
+        }
+        .queue-container h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #1DB954;
+        }
+        .queue-container input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #1DB954;
+            border-radius: 50px;
+            background-color: #2A2A2A;
+            color: white;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .queue-container input[type="text"]::placeholder {
+            color: #7A7A7A;
+        }
+        .queue-list {
+            list-style: none;
+            padding: 0;
+        }
+        .queue-list li {
+            padding: 10px;
+            background-color: #282828;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .queue-list li.playing {
+            font-weight: bold;
+            color: #1DB954;
+        }
+        .queue-list li:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header Section -->
+<header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="credits.html">Credits</a>
+        <a href="mp4player.html">MP4 Player</a>
+        <a href="https://github.com/TooMuchJack/mpsic/issues" target="_blank">Bug</a>
+        <a href="https://spotifydown.com" target="_blank">Download</a>
+    </nav>
+    <a href="https://www.buymeacoffee.com/your-profile" class="buy-coffee" target="_blank">Buy Me a Coffee</a>
+</header>
+
+<!-- MP4 Player Section -->
+<div class="content">
+    <!-- Controls Section -->
+    <div class="controls-container">
+        <button id="customFileBtn" class="custom-file-button">Choose MP4 Files</button>
+        <button id="addToQueueBtn">Add to Queue</button>
+        <button id="playBtn">Play</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="playAllBtn">Play All in Sequence</button>
+        <button id="playRandomBtn">Play Random</button>
+        <button id="skipBtn">Skip</button>
+        <button id="previousBtn">Previous</button>
+        <input type="file" id="fileInput" accept="video/mp4" multiple>
+    </div>
+
+    <!-- Video Section -->
+    <div class="player-container">
+        <div class="video-container">
+            <video id="videoPlayer" controls></video>
+        </div>
+    </div>
+
+    <!-- Queue Section -->
+    <div class="queue-container">
+        <h2>Playlist Queue</h2>
+        <input type="text" placeholder="Search">
+        <ul class="queue-list" id="queue"></ul>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const customFileBtn = document.getElementById('customFileBtn');
+    const addToQueueBtn = document.getElementById('addToQueueBtn');
+    const videoPlayer = document.getElementById('videoPlayer');
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const playAllBtn = document.getElementById('playAllBtn');
+    const playRandomBtn = document.getElementById('playRandomBtn');
+    const skipBtn = document.getElementById('skipBtn');
+    const previousBtn = document.getElementById('previousBtn');
+    const queue = document.getElementById('queue');
+
+    let files = [];
+    let currentFileIndex = 0;
+
+    customFileBtn.addEventListener('click', function() {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', function(event) {
+        const selectedFiles = Array.from(event.target.files);
+        selectedFiles.forEach(file => {
+            files.push(file);
+            addToQueue(file);
+        });
+    });
+
+    addToQueueBtn.addEventListener('click', function() {
+        fileInput.click(); // Trigger file input dialog to select files
+    });
+
+    function addToQueue(file) {
+        const queueItem = document.createElement('li');
+        queueItem.textContent = file.name;
+        queueItem.addEventListener('click', () => playFile(file));
+        queue.appendChild(queueItem);
+    }
+
+    playBtn.addEventListener('click', function() {
+        if (files.length > 0) {
+            videoPlayer.play();
+        }
+    });
+
+    pauseBtn.addEventListener('click', function() {
+        videoPlayer.pause();
+    });
+
+    playAllBtn.addEventListener('click', function() {
+        if (files.length > 0) {
+            currentFileIndex = 0;
+            playFile(files[currentFileIndex]);
+        }
+    });
+
+    playRandomBtn.addEventListener('click', function() {
+        if (files.length > 0) {
+            const randomIndex = Math.floor(Math.random() * files.length);
+            playFile(files[randomIndex]);
+        }
+    });
+
+    skipBtn.addEventListener('click', function() {
+        if (files.length > 0) {
+            if (currentFileIndex < files.length - 1) {
+                currentFileIndex++;
+                playFile(files[currentFileIndex]);
+            }
+        }
+    });
+
+    previousBtn.addEventListener('click', function() {
+        if (files.length > 0) {
+            if (currentFileIndex > 0) {
+                currentFileIndex--;
+                playFile(files[currentFileIndex]);
+            }
+        }
+    });
+
+    function playFile(file) {
+        const fileURL = URL.createObjectURL(file);
+        videoPlayer.src = fileURL;
+        videoPlayer.play();
+    }
+</script>
+
+</body>
+</html>

@@ -86,6 +86,19 @@
             align-items: center;
             justify-content: center;
         }
+        .volume-container::before {
+            content: url('Functions/Soundmuted.png');
+            position: absolute;
+            top: 5px;
+            transform: scale(0.2); 
+        }
+        
+        .volume-container::after {
+            content: url('Functions/Soundplay.png');
+            position: absolute;
+            bottom: 5px;
+            transform: scale(0.2);
+        }
         .volume-bar {
             width: 20px;
             height: 100%;
@@ -198,3 +211,15 @@
         header .logo img {
             height: 40px; 
             width: auto;
+        }
+button img {
+    height: 90%;
+    width: 90%;
+    object-fit: contain;
+}
+button {
+    height: 90px ;
+    width: 90px;
+    display: inline-block;
+
+}

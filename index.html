@@ -42,22 +42,26 @@
         <div class="controls-container">
             <label class="custom-file-button" for="fileInput">Choose MP3 Files 'Q'</label> 
             <input type="file" id="fileInput" accept="audio/mp3" multiple>
+            
+            <div class="button-flex">
+                <button id="playRandomBtn">
+                    <img src="Functions/Shuffle.png">
+                </button>
+                <button id="prevBtn">
+                    <img src="Functions/Playback.png">
+                </button>
+                <button id="playAllBtn">
+                    <img src="Functions/Play.png">
+                </button>
+                <button id="pauseBtn">
+                    <img src="Functions/Pause.png">
+                </button>
+                <button id="skipBtn">
+                    <img src="Functions/Playforward.png">
+                </button>
 
-            <button id="playRandomBtn">
-                <img src="Functions/Shuffle.png">
-            </button>
-            <button id="prevBtn">
-                <img src="Functions/Playback.png">
-            </button>
-            <button id="playAllBtn">
-                <img src="Functions/Play.png">
-            </button>
-            <button id="pauseBtn">
-                <img src="Functions/Pause.png">
-            </button>
-            <button id="skipBtn">
-                <img src="Functions/Playforward.png"
-            </button>
+            </div>
+
         </div>
 
         <audio id="audioPlayer" controls></audio>

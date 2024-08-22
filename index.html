@@ -204,23 +204,23 @@
     updateVolumeFill(); 
     document.addEventListener('keydown', function(event) {
     switch(event.code) {
-        case 'Space': // Spacebar to play/pause
+        case 'Space': 
             if (videoPlayer.paused) {
                 videoPlayer.play();
             } else {
                 videoPlayer.pause();
             }
             break;
-        case 'ArrowRight': // Right arrow to skip to next video
+        case 'ArrowRight':
             skipVideo();
             break;
-        case 'ArrowLeft': // Left arrow to go to previous video
+        case 'ArrowLeft': 
             previousVideo();
             break;
-        case 'KeyR': // 'R' key to play a random video
+        case 'KeyR': 
             playRandom();
             break;
-        case 'KeyQ': // 'Q' key to add a video to the queue
+        case 'KeyQ': 
             openFileDialog();
             break;
     }
@@ -246,7 +246,7 @@ function playRandom() {
 }
 
 function openFileDialog() {
-    document.getElementById('fileInput').click(); // Trigger file input dialog
+    document.getElementById('fileInput').click(); 
 }
 </script>
 

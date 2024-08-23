@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MpCrimz - MP3 List</title>
+    <link rel="icon" href="https://raw.githubusercontent.com/TooMuchJack/mpcrimz/main/image.png" type="image/png">
+    <meta property="og:title" content="MpCrimz">
+    <meta property="og:description" content="A safe and free way to play any audio file in a playlist">
+    <meta property="og:image" content="https://raw.githubusercontent.com/TooMuchJack/mpcrimz/main/image.png">
+    <meta property="og:type" content="website">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        header {
+            width: 100%;
+            background-color: #2A2A2A;
+            padding: 0 45px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            height: 105px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+
+        header .logo img {
+            height: 60px;
+            width: 60px;
+            object-fit: contain;
+        }
+
+        header .nav-container {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        header nav {
+            display: flex;
+            align-items: center;
+        }
+
+        header nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 22.5px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        header nav a:hover {
+            color: #1DB954;
+        }
+
+        header .buy-coffee {
+            background-color: #1DB954;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 75px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-left: 30px;
+        }
+
+        header .buy-coffee:hover {
+            background-color: #14833B;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 120px;
+            position: relative;
+        }
+
+        .box-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: #181818;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .box-container h1 {
+            font-size: 3.75rem;
+            margin-bottom: 30px;
+            color: #1DB954;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .file-list li {
+            padding: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            color: white;
+            border-bottom: 1px solid #333;
+            font-size: 1.5rem;
+            background-color: #222;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-list li:hover {
+            background-color: #333;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .file-list li:last-child {
+            border-bottom: none;
+        }
+
+        .audio-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .audio-controls .control-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .audio-controls button {
+            background-color: #1DB954;
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.25rem;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+            max-width: 150px;
+        }
+
+        .audio-controls button:hover {
+            background-color: #14833B;
+        }
+
+        .volume-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: calc(50% - 430px); /* Adjust this value to move the volume control farther away */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .volume-control button {
+            background-color: #1DB954;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .volume-control button:hover {
+            background-color: #14833B;
+        }
+
+        .volume-control input {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 150px;
+            background: #1DB954;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .volume-control input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .volume-control input::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        /* Hide default audio player controls */
+        audio {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://raw.githubusercontent.com/TooMuchJack/mpcrimz/main/image.png" alt="Logo">
+        </div>
+        <div class="nav-container">
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="credits.html">Credits</a>
+                <a href="mp4player.html">MP4 Player</a>
+                <a href="https://github.com/TooMuchJack/mpcrimz/issues" target="_blank">Bug</a>
+                <a href="https://spotifydown.com" target="_blank">Download</a>
+            </nav>
+            <a href="https://ko-fi.com/mpsic" class="buy-coffee" target="_blank">Buy Me a Coffee</a>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="box-container">
+            <h1>Default Songs</h1>
+            <div class="audio-controls">
+                <div class="control-buttons">
+                    <button id="playPauseButton">Play</button>
+                    <button id="shuffleButton">Shuffle</button>
+                </div>
+            </div>
+            <ul class="file-list" id="mp3List">
+                <!-- MP3 files will be displayed here -->
+            </ul>
+        </div>
+    </div>
+
+    <div class="volume-control">
+        <button id="muteButton">Mute</button>
+        <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="1">
+    </div>
+
+    <!-- Audio player -->
+    <audio id="audioPlayer" controls>
+        <source id="audioSource" src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Sample list of MP3 files - replace with dynamic fetching logic from your server
+        let mp3Files = [
+            'song1.mp3',
+            'song2.mp3',
+            'song3.mp3',
+            'song3.mp3',
+            'song3.mp3',
+            'song3.mp3',
+            'song3.mp3',
+            'song4.mp3'
+        ];
+
+        const mp3List = document.getElementById('mp3List');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const audioSource = document.getElementById('audioSource');
+        const playPauseButton = document.getElementById('playPauseButton');
+        const shuffleButton = document.getElementById('shuffleButton');
+        const volumeControl = document.getElementById('volumeControl');
+        const muteButton = document.getElementById('muteButton');
+
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+        let isShuffling = false;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Populate the MP3 list
+        mp3Files.forEach((file, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = file;
+            listItem.addEventListener('click', () => playTrack(index));
+            mp3List.appendChild(listItem);
+        });
+
+        function playTrack(index) {
+            audioSource.src = mp3Files[index];
+            audioPlayer.load();
+            audioPlayer.play();
+            playPauseButton.textContent = 'Pause';
+            isPlaying = true;
+            currentTrackIndex = index;
+        }
+
+        function playPause() {
+            if (isPlaying) {
+                audioPlayer.pause();
+                playPauseButton.textContent = 'Play';
+            } else {
+                audioPlayer.play();
+                playPauseButton.textContent = 'Pause';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function toggleShuffle() {
+            isShuffling = !isShuffling;
+            shuffleButton.style.backgroundColor = isShuffling ? '#14833B' : '#1DB954';
+            if (isShuffling) {
+                shuffleArray(mp3Files);
+                mp3List.innerHTML = ''; // Clear the list
+                mp3Files.forEach((file, index) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = file;
+                    listItem.addEventListener('click', () => playTrack(index));
+                    mp3List.appendChild(listItem);
+                });
+            }
+        }
+
+        playPauseButton.addEventListener('click', playPause);
+        shuffleButton.addEventListener('click', toggleShuffle);
+
+        volumeControl.addEventListener('input', (e) => {
+            audioPlayer.volume = e.target.value;
+        });
+
+        muteButton.addEventListener('click', () => {
+            audioPlayer.muted = !audioPlayer.muted;
+            muteButton.textContent = audioPlayer.muted ? 'Unmute' : 'Mute';
+        });
+    </script>
+
+</body>
+</html>

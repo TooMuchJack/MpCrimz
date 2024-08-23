@@ -181,7 +181,7 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            left: calc(50% - 430px); /* Adjust this value to move the volume control farther away */
+            left: calc(50% - 170px); /* Adjust this value to move the volume control closer */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -210,6 +210,7 @@
             background: #1DB954;
             border-radius: 10px;
             outline: none;
+            margin-left: 10px; /* Add some space between the volume control and the buttons */
         }
 
         .volume-control input::-webkit-slider-thumb {
@@ -243,7 +244,6 @@
             <nav>
                 <a href="index.html">Home</a>
                 <a href="credits.html">Credits</a>
-                <a href="pl.html">Preloaded</a>
                 <a href="mp4player.html">MP4 Player</a>
                 <a href="https://github.com/TooMuchJack/mpcrimz/issues" target="_blank">Bug</a>
                 <a href="https://spotifydown.com" target="_blank">Download</a>
@@ -254,10 +254,12 @@
 
     <div class="content">
         <div class="box-container">
-            <h1>Default Songs</h1>
+            <h1>Songs</h1>
             <div class="audio-controls">
                 <div class="control-buttons">
+                    <button id="prevButton">Prev</button>
                     <button id="playPauseButton">Play</button>
+                    <button id="nextButton">Next</button>
                     <button id="shuffleButton">Shuffle</button>
                 </div>
             </div>
@@ -281,93 +283,111 @@
     <script>
         // Sample list of MP3 files - replace with dynamic fetching logic from your server
         let mp3Files = [
-            'bwu/animals.mp3',
-            'bwu/anxious.mp3',
-            'bwu/courdory.mp3',
-            'bwu/easier.mp3',
-            'bwu/gaslight.mp3',
-            'bwu/Runaway.mp3',
-            'bwu/hesitate.mp3',
-            'bwu/ConcreteMemory.mp3',
-            'bwu/FallingApart.mp3',
-            'bwu/Pyrotechnic.mp3',
-            'bwu/Greener.mp3',
-            'ToxicAffection.mp3'
-        ];
+    // List of more than 50 MP3 files
+    'bwu/animals.mp3', 'bwu/anxious.mp3', 'bwu/ConcreteMemory.mp4', 'bwu/courdory.mp3', 'bwu/easier.mp3',
+    'bwu/FallingApart.mp4', 'bwu/gaslight.mp3', 'bwu/Greener.mp4', 'bwu/hesitate.mp4', 'bwu/Pyrotechnic.mp4',
+    'bwu/Runaway.mp3', 'bwu/stolendance.mp3', 'bwu/ToxicAffection.mp4', 'bwu/TwoFlies.mp4', 
+    // Placeholder 'song15.mp3',
+    // Placeholder 'song16.mp3', 'song17.mp3', 'song18.mp3', 'song19.mp3', 'song20.mp3',
+    // Placeholder 'song21.mp3', 'song22.mp3', 'song23.mp3', 'song24.mp3', 'song25.mp3',
+    // Placeholder 'song26.mp3', 'song27.mp3', 'song28.mp3', 'song29.mp3', 'song30.mp3',
+    // Placeholder 'song31.mp3', 'song32.mp3', 'song33.mp3', 'song34.mp3', 'song35.mp3',
+    // Placeholder 'song36.mp3', 'song37.mp3', 'song38.mp3', 'song39.mp3', 'song40.mp3',
+    // Placeholder 'song41.mp3', 'song42.mp3', 'song43.mp3', 'song44.mp3', 'song45.mp3',
+    // Placeholder 'song46.mp3', 'song47.mp3', 'song48.mp3', 'song49.mp3', 'song50.mp3',
+    // Placeholder 'song51.mp3', 'song52.mp3', 'song53.mp3', 'song54.mp3', 'song55.mp3'
+];
 
-        const mp3List = document.getElementById('mp3List');
-        const audioPlayer = document.getElementById('audioPlayer');
-        const audioSource = document.getElementById('audioSource');
-        const playPauseButton = document.getElementById('playPauseButton');
-        const shuffleButton = document.getElementById('shuffleButton');
-        const volumeControl = document.getElementById('volumeControl');
-        const muteButton = document.getElementById('muteButton');
+const mp3List = document.getElementById('mp3List');
+const audioPlayer = document.getElementById('audioPlayer');
+const audioSource = document.getElementById('audioSource');
+const playPauseButton = document.getElementById('playPauseButton');
+const shuffleButton = document.getElementById('shuffleButton');
+const volumeControl = document.getElementById('volumeControl');
+const muteButton = document.getElementById('muteButton');
+const prevButton = document.getElementById('prevButton');
+const nextButton = document.getElementById('nextButton');
 
-        let currentTrackIndex = 0;
-        let isPlaying = false;
-        let isShuffling = false;
+let currentTrackIndex = 0;
+let isPlaying = false;
+let isShuffling = false;
 
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-        }
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
 
-        // Populate the MP3 list
-        mp3Files.forEach((file, index) => {
-            const listItem = document.createElement('li');
-            listItem.textContent = file;
-            listItem.addEventListener('click', () => playTrack(index));
-            mp3List.appendChild(listItem);
-        });
+function updateList() {
+    mp3List.innerHTML = ''; // Clear the list
+    mp3Files.forEach((file, index) => {
+        const listItem = document.createElement('li');
+        listItem.textContent = file;
+        listItem.addEventListener('click', () => playTrack(index));
+        mp3List.appendChild(listItem);
+    });
+}
 
-        function playTrack(index) {
-            audioSource.src = mp3Files[index];
-            audioPlayer.load();
-            audioPlayer.play();
-            playPauseButton.textContent = 'Pause';
-            isPlaying = true;
-            currentTrackIndex = index;
-        }
+// Populate the MP3 list
+updateList();
 
-        function playPause() {
-            if (isPlaying) {
-                audioPlayer.pause();
-                playPauseButton.textContent = 'Play';
-            } else {
-                audioPlayer.play();
-                playPauseButton.textContent = 'Pause';
-            }
-            isPlaying = !isPlaying;
-        }
+function playTrack(index) {
+    audioSource.src = mp3Files[index];
+    audioPlayer.load();
+    audioPlayer.play();
+    playPauseButton.textContent = 'Pause';
+    isPlaying = true;
+    currentTrackIndex = index;
+}
 
-        function toggleShuffle() {
-            isShuffling = !isShuffling;
-            shuffleButton.style.backgroundColor = isShuffling ? '#14833B' : '#1DB954';
-            if (isShuffling) {
-                shuffleArray(mp3Files);
-                mp3List.innerHTML = ''; // Clear the list
-                mp3Files.forEach((file, index) => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = file;
-                    listItem.addEventListener('click', () => playTrack(index));
-                    mp3List.appendChild(listItem);
-                });
-            }
-        }
+function playPause() {
+    if (isPlaying) {
+        audioPlayer.pause();
+        playPauseButton.textContent = 'Play';
+    } else {
+        audioPlayer.play();
+        playPauseButton.textContent = 'Pause';
+    }
+    isPlaying = !isPlaying;
+}
 
-        playPauseButton.addEventListener('click', playPause);
-        shuffleButton.addEventListener('click', toggleShuffle);
+function toggleShuffle() {
+    isShuffling = !isShuffling;
+    shuffleButton.style.backgroundColor = isShuffling ? '#14833B' : '#1DB954';
+    if (isShuffling) {
+        shuffleArray(mp3Files);
+        updateList();
+    }
+}
 
-        volumeControl.addEventListener('input', (e) => {
-            audioPlayer.volume = e.target.value;
-        });
+function prevTrack() {
+    if (mp3Files.length > 0) {
+        currentTrackIndex = (currentTrackIndex - 1 + mp3Files.length) % mp3Files.length;
+        playTrack(currentTrackIndex);
+    }
+}
 
-        muteButton.addEventListener('click', () => {
-            audioPlayer.muted = !audioPlayer.muted;
-            muteButton.textContent = audioPlayer.muted ? 'Unmute' : 'Mute';
-        });
+function nextTrack() {
+    if (mp3Files.length > 0) {
+        currentTrackIndex = (currentTrackIndex + 1) % mp3Files.length;
+        playTrack(currentTrackIndex);
+    }
+}
+
+playPauseButton.addEventListener('click', playPause);
+shuffleButton.addEventListener('click', toggleShuffle);
+prevButton.addEventListener('click', prevTrack);
+nextButton.addEventListener('click', nextTrack);
+
+volumeControl.addEventListener('input', (e) => {
+    audioPlayer.volume = e.target.value;
+});
+
+muteButton.addEventListener('click', () => {
+    audioPlayer.muted = !audioPlayer.muted;
+    muteButton.textContent = audioPlayer.muted ? 'Unmute' : 'Mute';
+});
     </script>
 
 </body>

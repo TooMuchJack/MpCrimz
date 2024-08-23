@@ -375,6 +375,15 @@ function nextTrack() {
     }
 }
 
+// Handle track end
+audioPlayer.addEventListener('ended', () => {
+    if (isShuffling) {
+        shuffleArray(mp3Files); // Shuffle tracks if in shuffle mode
+        updateList(); // Update the list to reflect shuffled order
+    }
+    nextTrack(); // Play the next track
+});
+
 playPauseButton.addEventListener('click', playPause);
 shuffleButton.addEventListener('click', toggleShuffle);
 prevButton.addEventListener('click', prevTrack);
